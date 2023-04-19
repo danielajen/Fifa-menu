@@ -61,12 +61,12 @@ namespace Fifa_menu
 
         private void DisplayImages(Dictionary<string, Image> images, params PictureBox[] pictureBoxes)
         {
-            for (int i = 0; i < pictureBoxes.Length; i++)
+            for(int i = 0; i < pictureBoxes.Length; i++)
             {
                 if (i >= images.Count)
                 {
                     pictureBoxes[i].Image = null;
-                    continue;
+                    break;
                 }
 
                 var menuItemName = images.ElementAt(i).Key;
