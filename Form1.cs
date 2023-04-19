@@ -12,7 +12,6 @@ namespace Fifa_menu
 {
     public partial class Form1 : Form
     {
-        private Dictionary<string, PictureBox> previewBoxes = new Dictionary<string, PictureBox>();
 
         private Dictionary<string, Image> teamOptions;
         private Dictionary<string, Image> headOptions;
@@ -24,9 +23,12 @@ namespace Fifa_menu
         {
 
             InitializeComponent();
-            previewBoxes.Add("Team", pictureBox3);
-            previewBoxes.Add("Nationality", pictureBox5);
-            previewBoxes.Add("Drip", pictureBox6);
+            // keyb
+            undoToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Z;
+            newToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
+            exitToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.X;
+
+
 
             headOptions = new Dictionary<string, Image>(); ;
             headOptions.Add("Black", Properties.Resources.black1);
@@ -56,37 +58,33 @@ namespace Fifa_menu
 
 
         }
-        private void ShowPreviewImages(Dictionary<string, Image> previewImages)
+
+        private void DisplayImages(Dictionary<string, Image> images, params PictureBox[] pictureBoxes)
         {
-            // iterate through the dictionary and set the corresponding PictureBox controls to display the images
-            foreach (var previewImage in previewImages)
+            for (int i = 0; i < pictureBoxes.Length; i++)
             {
-                if (previewImage.Value != null && previewBoxes.ContainsKey(previewImage.Key))
+                if (i >= images.Count)
                 {
-                    if (previewBoxes[previewImage.Key] == pictureBox3 ||
-                    previewBoxes[previewImage.Key] == pictureBox5 ||
-                    previewBoxes[previewImage.Key] == pictureBox6)
-                    {
-                        previewBoxes[previewImage.Key].Image = previewImage.Value;
-                        previewBoxes[previewImage.Key].Visible = true;
-                    }
+                    pictureBoxes[i].Image = null;
+                    continue;
+                }
+
+                var menuItemName = images.ElementAt(i).Key;
+                if (images.ContainsKey(menuItemName))
+                {
+                    pictureBoxes[i].Image = images[menuItemName];
                 }
             }
         }
+        
+     
 
-        private void HideAllPreviewImages()
-        {
-            // iterate through all preview PictureBox controls and hide them
-            foreach (var previewBox in previewBoxes)
-            {
-                previewBox.Value.Visible = false;
-            }
-        }
+
 
         private string currentTeam = "Chelsea";
         private void teamToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HideAllPreviewImages();
+
 
             var menuItem = (ToolStripMenuItem)sender;
             var selectedTeam = menuItem.Text;
@@ -99,30 +97,15 @@ namespace Fifa_menu
             {
                 team1.Image = teamOptions[currentTeam];
             }
-
-            // show all preview images for the current menu item
-            if (currentTeam == "Chelsea")
-            {
-                ShowPreviewImages(headOptions);
-            }
-            else if (currentTeam == "Liverpool")
-            {
-                ShowPreviewImages(nationalityOptions);
-            }
-            else if (currentTeam == "Real Madrid")
-            {
-                ShowPreviewImages(dripOptions);
-            }
-            else if (currentTeam == "Toronto FC")
-            {
-                ShowPreviewImages(positionOptions);
-            }
+            DisplayImages(teamOptions, preview1, preview2, preview3, previewx);
         }
+
+            
 
         private string nat = "Nigeria";
         private void nationalityToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HideAllPreviewImages();
+           
             var menuItem = (ToolStripMenuItem)sender;
             var selectedNationality = menuItem.Text;
 
@@ -133,13 +116,14 @@ namespace Fifa_menu
             {
                 pictureBox7.Image = nationalityOptions[nat];
             }
-            ShowPreviewImages(nationalityOptions);
+            DisplayImages(nationalityOptions, preview1, preview2, preview3, previewx);
+
         }
 
         private string drips = "Black Nike Fit";
         private void facialHairToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HideAllPreviewImages();
+            
             var menuItem = (ToolStripMenuItem)sender;
             var selectedDrip = menuItem.Text;
 
@@ -150,7 +134,8 @@ namespace Fifa_menu
             {
                 drip.Image = dripOptions[drips];
             }
-            ShowPreviewImages(dripOptions);
+            DisplayImages(dripOptions, preview1, preview2, preview3, previewx);
+
         }
 
         private string face = "Black";
@@ -166,6 +151,7 @@ namespace Fifa_menu
             {
                 face1.Image = headOptions[face];
             }
+            DisplayImages(headOptions, preview1, preview2, preview3, previewx);
         }
         private string position = "CM";
         private void positionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -180,6 +166,52 @@ namespace Fifa_menu
             {
                 pos.Image = positionOptions[position];
             }
+            DisplayImages(positionOptions, preview1, preview2, preview3, previewx);
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Save current selections to the selections dictionary
+            selections["team"] = currentTeam;
+            selections["nationality"] = nat;
+            selections["drip"] = drips;
+            selections["face"] = face;
+            selections["position"] = position;
+
+            // Clear 
+            currentTeam = "Chelsea";
+            nat = "Nigeria";
+            drips = "Black Nike Fit";
+            face = "Black";
+            position = "CM";
+
+            // Reset 
+            team1.Image = teamOptions[currentTeam];
+            pictureBox7.Image = nationalityOptions[nat];
+            drip.Image = dripOptions[drips];
+            face1.Image = headOptions[face];
+            pos.Image = positionOptions[position];
+            
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Save current selections to the selections dictionary
+            selections["team"] = currentTeam;
+            selections["nationality"] = nat;
+            selections["drip"] = drips;
+            selections["face"] = face;
+            selections["position"] = position;
+
+  
+
+            // Close the program
+            Application.Exit();
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
